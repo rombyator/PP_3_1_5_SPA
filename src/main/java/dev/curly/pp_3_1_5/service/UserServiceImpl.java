@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void update(User user) {
+    public User update(User user) {
         var rawPassword = user.getPassword();
 
         if (rawPassword != null && !rawPassword.isEmpty()) {
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
                     .ifPresent(dbUser -> user.setPassword(dbUser.getPassword()));
         }
 
-        userRepo.save(user);
+        return userRepo.save(user);
     }
 
     @Override

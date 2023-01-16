@@ -14,7 +14,7 @@ public interface UserService {
 
     void add(User user) throws UserEmailAlreadyInUse;
 
-    void update(User user);
+    User update(User user);
 
     void delete(long id);
 
