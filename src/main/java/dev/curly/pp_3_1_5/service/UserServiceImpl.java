@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,6 +29,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findById(long id) {
+        return userRepo.findById(id);
+    }
+
+    @Override
     @Transactional
     public void add(User user) throws UserEmailAlreadyInUse {
         if (userRepo.findByEmail(user.getEmail()).isPresent()) {
@@ -39,20 +45,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(long id) {
-        return userRepo.getReferenceById(id);
-    }
-
-    @Override
     @Transactional
     public void update(User user) {
-        var dbUser = getById(user.getId());
         var rawPassword = user.getPassword();
 
         if (rawPassword != null && !rawPassword.isEmpty()) {
+            // set password from frontend, if present
             user.setPassword(passwordEncoder.encode(rawPassword));
         } else {
-            user.setPassword(dbUser.getPassword());
+            // set password from saved entity, if present
+            userRepo.findById(user.getId())
+                    .ifPresent(dbUser -> user.setPassword(dbUser.getPassword()));
         }
 
         userRepo.save(user);

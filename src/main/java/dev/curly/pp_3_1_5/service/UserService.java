@@ -5,13 +5,14 @@ import dev.curly.pp_3_1_5.model.Role;
 import dev.curly.pp_3_1_5.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     List<User> getAll();
 
-    void add(User user) throws UserEmailAlreadyInUse;
+    Optional<User> findById(long id);
 
-    User getById(long id);
+    void add(User user) throws UserEmailAlreadyInUse;
 
     void update(User user);
 
