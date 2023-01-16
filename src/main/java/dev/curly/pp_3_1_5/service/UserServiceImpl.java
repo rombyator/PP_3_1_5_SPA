@@ -35,9 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void add(User user) throws UserEmailAlreadyInUse {
+    public void add(User user) {
         if (userRepo.findByEmail(user.getEmail()).isPresent()) {
-            throw new UserEmailAlreadyInUse();
+            throw new UserEmailAlreadyInUse(user.getEmail());
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
