@@ -1,6 +1,5 @@
 package dev.curly.pp_3_1_5.service;
 
-import dev.curly.pp_3_1_5.exceptions.UserEmailAlreadyInUse;
 import dev.curly.pp_3_1_5.model.Role;
 import dev.curly.pp_3_1_5.model.User;
 
@@ -10,13 +9,13 @@ import java.util.Optional;
 public interface UserService {
     List<User> getAll();
 
-    Optional<User> findById(long id);
+    Optional<User> findById(Long id);
 
-    void add(User user) throws UserEmailAlreadyInUse;
+    User add(User newUser);
 
-    User update(User user);
+    User update(User newUser, Long id);
 
-    void delete(long id);
+    void delete(Long id);
 
     boolean isUserWithRoleExists(Role role);
 }

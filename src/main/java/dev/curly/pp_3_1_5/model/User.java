@@ -121,6 +121,17 @@ public class User implements UserDetails {
         return roles.stream().map(Role::getSimpleName).toList();
     }
 
+    public User updateWith(User user) {
+        this.setFirstName(user.getFirstName());
+        this.setLastName(user.getLastName());
+        this.setAge(user.getAge());
+        this.setPassword(user.getPassword());
+        this.setEmail(user.getEmail());
+        this.setRoles(user.getRoles());
+
+        return this;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();

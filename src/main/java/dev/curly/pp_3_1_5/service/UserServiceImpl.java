@@ -1,6 +1,6 @@
 package dev.curly.pp_3_1_5.service;
 
-import dev.curly.pp_3_1_5.exceptions.UserEmailAlreadyInUse;
+import dev.curly.pp_3_1_5.exceptions.UserEmailAlreadyInUseException;
 import dev.curly.pp_3_1_5.model.Role;
 import dev.curly.pp_3_1_5.model.User;
 import dev.curly.pp_3_1_5.repository.UserRepository;
@@ -29,46 +29,58 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(long id) {
+    public Optional<User> findById(Long id) {
         return userRepo.findById(id);
     }
 
     @Override
     @Transactional
-    public void add(User user) {
-        if (userRepo.findByEmail(user.getEmail()).isPresent()) {
-            throw new UserEmailAlreadyInUse(user.getEmail());
+    public User add(User newUser) {
+        // Check if user is already in db
+        Optional<User> maybeSavedUser = userRepo.findByEmail(newUser.getEmail());
+        if (maybeSavedUser.isPresent()) {
+            throw new UserEmailAlreadyInUseException(newUser.getEmail());
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepo.save(user);
+        encodePassword(newUser);
+
+        return userRepo.save(newUser);
     }
 
     @Override
     @Transactional
-    public User update(User user) {
-        var rawPassword = user.getPassword();
+    public User update(User newUser, Long id) {
+        encodePassword(newUser);
 
-        if (rawPassword != null && !rawPassword.isEmpty()) {
-            // set password from frontend, if present
-            user.setPassword(passwordEncoder.encode(rawPassword));
-        } else {
-            // set password from saved entity, if present
-            userRepo.findById(user.getId())
-                    .ifPresent(dbUser -> user.setPassword(dbUser.getPassword()));
-        }
+        return userRepo
+            .findById(id)
+            .map(dbUser -> {
+                dbUser.updateWith(newUser);
 
-        return userRepo.save(user);
+                return userRepo.save(dbUser);
+            })
+            .orElseGet(() -> {
+                newUser.setId(id);
+
+                return userRepo.save(newUser);
+            });
     }
 
     @Override
     @Transactional
-    public void delete(long id) {
+    public void delete(Long id) {
         userRepo.deleteById(id);
     }
 
     @Override
     public boolean isUserWithRoleExists(Role role) {
         return userRepo.existsWithRole(role.getName());
+    }
+
+    private void encodePassword(User user) {
+        var rawPassword = user.getPassword();
+        if (rawPassword != null && !rawPassword.isEmpty()) {
+            user.setPassword(passwordEncoder.encode(rawPassword));
+        }
     }
 }

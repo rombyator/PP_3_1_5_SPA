@@ -1,6 +1,6 @@
 package dev.curly.pp_3_1_5.configs;
 
-import dev.curly.pp_3_1_5.exceptions.UserEmailAlreadyInUse;
+import dev.curly.pp_3_1_5.exceptions.UserEmailAlreadyInUseException;
 import dev.curly.pp_3_1_5.model.Role;
 import dev.curly.pp_3_1_5.model.User;
 import dev.curly.pp_3_1_5.service.RoleService;
@@ -30,7 +30,7 @@ public class DbInit {
      * Add admin user if no admins present in db
      */
     @Bean
-    CommandLineRunner init() throws UserEmailAlreadyInUse {
+    CommandLineRunner init() throws UserEmailAlreadyInUseException {
         if (userService.isUserWithRoleExists(Role.adminRole())) {
             log.warn("Admin user already exists. Stopping db init");
 
