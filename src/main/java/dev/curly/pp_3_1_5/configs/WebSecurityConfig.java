@@ -2,6 +2,7 @@ package dev.curly.pp_3_1_5.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,6 +24,17 @@ public class WebSecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+    @Profile("dev")
+    @Bean
+    protected SecurityFilterChain filterChainDev(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests()
+            .anyRequest()
+            .permitAll();
+
+        return http.build();
+    }
+
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -34,6 +46,7 @@ public class WebSecurityConfig {
             .authorizeHttpRequests()
             .requestMatchers("/admin/**").hasRole("ADMIN")
             .requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")
+            .requestMatchers("/api/v1/**").hasAnyRole("ADMIN", "USER")
             .anyRequest().authenticated()
 
             // Login
@@ -50,11 +63,6 @@ public class WebSecurityConfig {
             .permitAll();
 
         return http.build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico");
     }
 
     @Bean
