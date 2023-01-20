@@ -52,18 +52,18 @@ public class UserServiceImpl implements UserService {
     public User update(User newUser, Long id) {
         encodePassword(newUser);
 
-        return userRepo
-            .findById(id)
-            .map(dbUser -> {
-                dbUser.updateWith(newUser);
+        return userRepo.findById(id).map(dbUser -> {
+            if (newUser.getPassword().isEmpty()) {
+                newUser.setPassword(dbUser.getPassword());
+            }
+            dbUser.updateWith(newUser);
 
-                return userRepo.save(dbUser);
-            })
-            .orElseGet(() -> {
-                newUser.setId(id);
+            return userRepo.save(dbUser);
+        }).orElseGet(() -> {
+            newUser.setId(id);
 
-                return userRepo.save(newUser);
-            });
+            return userRepo.save(newUser);
+        });
     }
 
     @Override
@@ -78,8 +78,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void encodePassword(User user) {
-        var rawPassword = user.getPassword();
-        if (rawPassword != null && !rawPassword.isEmpty()) {
+        var rawPassword = user.getPassword().trim();
+        if (!rawPassword.isEmpty()) {
             user.setPassword(passwordEncoder.encode(rawPassword));
         }
     }

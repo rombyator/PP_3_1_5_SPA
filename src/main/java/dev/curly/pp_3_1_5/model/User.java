@@ -1,5 +1,6 @@
 package dev.curly.pp_3_1_5.model;
 
+import dev.curly.pp_3_1_5.dto.UserDto;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,11 +29,46 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "users_roles",
-        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Collection<Role> roles = new HashSet<>();
+
+    public static UserDto toDto(User user) {
+        return new UserDto(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getAge(),
+                user.getEmail(),
+                "",
+                user.getRoles()
+                        .stream()
+                        .map(Role::toDto)
+                        .toList()
+        );
+    }
+
+    public static User fromDto(UserDto dto) {
+        var user = new User();
+        if (dto.id() != null) {
+            user.setId(dto.id());
+        }
+        user.setFirstName(dto.firstName());
+        user.setLastName(dto.lastName());
+        user.setAge(dto.age());
+        user.setEmail(dto.email());
+        user.setPassword(dto.password());
+        user.setRoles(dto
+                .roles()
+                .stream()
+                .map(Role::fromDto)
+                .toList()
+        );
+
+        return user;
+    }
 
     public static User anonymousUser() {
         var user = new User();
@@ -165,14 +201,14 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
-            "id=" + id +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", password='" + password + '\'' +
-            ", age=" + age +
-            ", roles=" + roles +
-            '}';
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", age=" + age +
+                ", roles=" + roles +
+                '}';
     }
 
     @Override

@@ -1,11 +1,10 @@
-import {viewMenu, viewUserInfo} from './common.js';
+import { User } from "./domain.js";
+import { viewMenu, viewUserInfo } from "./views.js";
+import repo from "./repository.js";
 
 $(document).ready(function () {
-    //--- Show navbar & user info
-    fetch('/api/v1/iam')
-        .then(response => response.json())
-        .then(user => {
-            $('#view--menu').html(viewMenu(user));
-            $('#view--user_info').html(viewUserInfo(user));
-        });
+    repo.whoAmI().then((iam) => {
+        $("#view--menu").html(viewMenu(iam));
+        $("#view--user_info").html(viewUserInfo(iam));
+    });
 });

@@ -1,5 +1,6 @@
 package dev.curly.pp_3_1_5.model;
 
+import dev.curly.pp_3_1_5.dto.RoleDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +17,21 @@ public class Role implements GrantedAuthority {
 
     @Column(unique = true, nullable = false)
     private String name;
+
+    public static RoleDto toDto(Role role) {
+        return new RoleDto(
+                role.getId(),
+                role.getName()
+        );
+    }
+
+    public static Role fromDto(RoleDto dto) {
+        var role = new Role();
+        role.setId(dto.id());
+        role.setName(dto.name());
+
+        return role;
+    }
 
     public static Role adminRole() {
         return new Role("admin");
@@ -65,9 +81,9 @@ public class Role implements GrantedAuthority {
     @Override
     public String toString() {
         return "Role{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     @Override
