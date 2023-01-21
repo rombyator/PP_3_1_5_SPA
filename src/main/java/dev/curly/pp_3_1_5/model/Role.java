@@ -1,10 +1,7 @@
 package dev.curly.pp_3_1_5.model;
 
 import dev.curly.pp_3_1_5.dto.RoleDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Objects;
@@ -12,7 +9,7 @@ import java.util.Objects;
 @Entity
 public class Role implements GrantedAuthority {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)
