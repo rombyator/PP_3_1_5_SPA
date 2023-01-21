@@ -1,6 +1,5 @@
 package dev.curly.pp_3_1_5.service;
 
-import dev.curly.pp_3_1_5.dto.RoleDto;
 import dev.curly.pp_3_1_5.model.Role;
 import dev.curly.pp_3_1_5.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
