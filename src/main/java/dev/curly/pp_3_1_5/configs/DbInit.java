@@ -1,10 +1,10 @@
 package dev.curly.pp_3_1_5.configs;
 
 import dev.curly.pp_3_1_5.exceptions.UserEmailAlreadyInUseException;
-import dev.curly.pp_3_1_5.model.Role;
 import dev.curly.pp_3_1_5.model.User;
 import dev.curly.pp_3_1_5.service.RoleService;
 import dev.curly.pp_3_1_5.service.UserService;
+import dev.curly.pp_3_1_5.utils.factory.RoleFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class DbInit {
      */
     @Bean
     CommandLineRunner init() throws UserEmailAlreadyInUseException {
-        if (userService.isUserWithRoleExists(Role.adminRole())) {
+        if (userService.isUserWithRoleExists(RoleFactory.adminRole())) {
             log.warn("Admin user already exists. Stopping db init");
 
             return null;
@@ -39,8 +39,8 @@ public class DbInit {
 
         return args -> {
             // Add 2 roles
-            var adminRole = Role.adminRole();
-            var userRole = Role.userRole();
+            var adminRole = RoleFactory.adminRole();
+            var userRole = RoleFactory.userRole();
             roleService.add(adminRole);
             log.info("Add ADMIN role");
             roleService.add(userRole);

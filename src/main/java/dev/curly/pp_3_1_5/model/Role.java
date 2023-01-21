@@ -14,14 +14,6 @@ public class Role implements GrantedAuthority {
     @Column(unique = true, nullable = false)
     private String name;
 
-    public static Role adminRole() {
-        return new Role("admin");
-    }
-
-    public static Role userRole() {
-        return new Role("user");
-    }
-
     public Role() {
     }
 

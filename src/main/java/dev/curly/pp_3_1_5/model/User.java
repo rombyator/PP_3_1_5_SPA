@@ -34,29 +34,6 @@ public class User implements UserDetails {
     )
     private Collection<Role> roles = new HashSet<>();
 
-    public static User anonymousUser() {
-        var user = new User();
-        user.setId(-1);
-        user.setFirstName("Anonymous");
-        user.setLastName("");
-        user.setAge(0);
-        user.setEmail("no email");
-        user.setRoles(List.of());
-
-        return user;
-    }
-
-    public static User newUser() {
-        var user = new User();
-        user.setFirstName("");
-        user.setLastName("");
-        user.setAge(0);
-        user.setEmail("");
-        user.setRoles(List.of());
-
-        return user;
-    }
-
     public User() {
     }
 
